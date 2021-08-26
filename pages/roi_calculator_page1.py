@@ -1,48 +1,15 @@
 from selenium.webdriver.common.by import By
 from pages.base_page import Page
 from selenium.webdriver.common.action_chains import ActionChains
-from time import sleep
-from selenium.webdriver.common.keys import Keys
+
 
 class RoiCalculatorPage(Page):
     REGION_SELECT = (By.ID, 'regionSelect')
     TOTAL_FIELD_AREA = (By.ID, 'totalFieldArea')
-    LOAM = (By.ID, 'Sandy')
-    CLAYEY = (By.ID, 'Clayey')
-
-    CORN_SOY = (By.ID, 'CornSoy')
-    CEREAL = (By.ID, 'Cereal')
-    VEGETABLES = (By.ID, 'Vegetables')
-    FRUITS = (By.ID, 'Fruits')
-    OTHERS = (By.ID, 'Others')
-
-    FULL_TILLAGE = (By.ID, 'fullTillage')
-    NO_TILL = (By.ID, 'noTill')
-    REDUCED_TILLAGE = (By.ID, 'reducedTillage')
-
-    COVER_CORPS_NO = (By.ID, 'willingToImplementCoverCropsNo')
-    COVER_CORPS_YES = (By.ID, 'willingToImplementCoverCropsYes')
-
-    COVER_CORPS_CEREALS_RYE = (By.ID, 'willingToImplementCoverCropsTypeCerealsRye')
-    COVER_CORPS_LEGUMINOSE = (By.ID, 'willingToImplementCoverCropsTypeLeguminose')
-    COVER_CORPS_2_SPECIES_MIX = (By.ID, 'willingToImplementCoverCropsType2SpeciesMix')
-    COVER_CORPS_2_BRASSICA = (By.ID, 'willingToImplementCoverCropsTypeBrassica')
-
-    NITROGEN_EFFICIENCY_PRACTICE_NO = (By.ID, 'willingToImplementNitrogenEfficiencyPracticesNo')
-    NITROGEN_EFFICIENCY_PRACTICE_YES = (By.ID, 'willingToImplementNitrogenEfficiencyPracticesYes')
-
-    NORTHERN_IA_SOUTHERN_MN = (By.CSS_SELECTOR, "option[value *= 'Region 1']")
-
-    SHOW_TOTAL_BENEFITS = (By.XPATH, "//button[@type='submit']")
-
-    NO_RESULT_POPUP = (By.ID, 'calculatorNoResultContactUs')
-    RESULT_POPUP = (By.CSS_SELECTOR, 'th.d-lg-none')
-
-    SOIL_TIPE_TOOLTIP = (By.CSS_SELECTOR, "i[data-original-title*='soil type']")
 
     FORMS_SECTIONS = {
         'Information: Soil type': [
-            (By.ID, 'Loam'),
+            (By.ID, 'loam'),
             (By.ID, 'Sandy'),
             (By.ID, 'Clayey'),
             (By.ID, 'Silty')
@@ -88,6 +55,16 @@ class RoiCalculatorPage(Page):
         ]
     }
 
+    NORTHERN_IA_SOUTHERN_MN = (By.CSS_SELECTOR, "option[value *= 'Region 1']")
+
+    SHOW_TOTAL_BENEFITS = (By.ID, "submitForm")
+
+    NO_RESULT_POPUP = (By.CSS_SELECTOR, 'div.no-result-body')
+    RESULT_POPUP = (By.CSS_SELECTOR, 'div.calculator-result-body')
+    # RESULT_POPUP = (By.ID, 'calculatorResult')
+
+    SOIL_TIPE_TOOLTIP = (By.CSS_SELECTOR, "i svg") #?????#
+
     def open_calculator_page(self):
         self.open_url('https://us.agorocarbonalliance.com/farmers-advisors/#calculator')
 
@@ -95,6 +72,7 @@ class RoiCalculatorPage(Page):
         self.input_text(search_query, *self.TOTAL_FIELD_AREA)
 
     def verify_input_result(self, search_query):
+        #self.verify_text(search_query, *self.TOTAL_FIELD_AREA)
         current_value = self.find_element(*self.TOTAL_FIELD_AREA).get_attribute('value')
         assert current_value == search_query, f'Expected {search_query} but got {current_value}'
 
@@ -108,16 +86,17 @@ class RoiCalculatorPage(Page):
     #     self.click(*self.NORTHERN_IA_SOUTHERN_MN)
 
     def wait_submit_clickable(self):
-        self.wait_for_element_click(*self.SHOW_TOTAL_BENEFITS)
-
+        # self.wait_for_element_click(*self.SHOW_TOTAL_BENEFITS)
+        self.click(*self.SHOW_TOTAL_BENEFITS)
 
     def click_show_total_benefits_btn(self):
-        self.submit(*self.SHOW_TOTAL_BENEFITS)
+        self.click(*self.SHOW_TOTAL_BENEFITS)
 
-
-    def click_fruits(self):
-        self.click(*self.FRUITS)
-
+    def hover_total_area(self):
+        total_area = self.find_elements(*self.TOTAL_FIELD_AREA)
+        actions = ActionChains(self.driver)
+        actions.move_to_element(total_area)
+        actions.perform()
 
     def hover_soil_type_tooltip(self):
         total_area = self.find_elements(*self.SOIL_TIPE_TOOLTIP)
@@ -125,22 +104,17 @@ class RoiCalculatorPage(Page):
         actions.move_to_element(total_area)
         actions.perform()
 
-
     def verify_result_popup_open(self):
         self.find_element(*self.RESULT_POPUP)
+
+    def verify_tag_type(self, value_type):
+        current_value_type = self.find_element(*self.TOTAL_FIELD_AREA).get_attribute('type')
+        assert value_type == current_value_type, f'Expected {value_type} but got {current_value_type}'
 
     def click_over_form_section(self, form_section):
         current_section = self.FORMS_SECTIONS[form_section]
 
+
         for current_option in current_section:
-            #print(current_option)
-            #self.wait_for_element_click(*current_option)
-            #e = self.driver.find_element(By.ID, 'Sandy')
-            #print('clicking..')
-            #e.click()
-            self.wait_for_element_click(*current_option)
-
-
-
-
-
+        #    print(current_option)
+            self.click(*current_option)

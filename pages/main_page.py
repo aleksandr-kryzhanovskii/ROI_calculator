@@ -6,6 +6,7 @@ class MainPage(Page):
     FARMERS_EDVISORS = (By.CSS_SELECTOR, "ul[role='list'] a[href ='/farmers-advisors/']")
     US_FARMERS = (By.CSS_SELECTOR, "a[href='https://us.agorocarbonalliance.com/farmers-advisors']")
     MY_FARM_INFORMATION = (By.CSS_SELECTOR, "#myFarmInformation h3")
+    TEST = (By.CSS_SELECTOR, "span.testimonial-item-name")
 
     def open_main_page(self):
         self.open_url('https://agorocarbonalliance.com/')
@@ -21,7 +22,10 @@ class MainPage(Page):
         self.click(*self.US_FARMERS)
 
     def scroll_to_calculator(self):
-        self.scroll_to_element(*self.MY_FARM_INFORMATION)
+        self.scroll_to_element(*self.TEST)
+
+    # def scroll_to_calculator(self):
+    #     self.scroll_to_element(*self.MY_FARM_INFORMATION)
 
 
 

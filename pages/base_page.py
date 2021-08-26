@@ -1,6 +1,6 @@
-from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-
+from selenium.webdriver.common.by import By
 
 class Page:
 
@@ -9,11 +9,21 @@ class Page:
         self.wait = WebDriverWait(self.driver, 15)
 
     def click(self, *locator):
-        self.driver.find_element(*locator).click()
+        print('INSIDE CLICK', *locator)
+        #self.driver.find_element(*locator).click()
+        e = self.driver.find_element(By.ID, 'Sandy')
+        print(e)
+        e.click()
+
+    def submit(self, *locator):
+        self.driver.find_element(*locator).submit()
 
     def wait_for_element_click(self, *locator):
+        print(locator)
+        print(type(locator))
         e = self.wait.until(EC.element_to_be_clickable(locator))
         e.click()
+
     def wait_until_element_dissapeare(self, *locator):
         self.wait.until(EC.invisibility_of_element(locator))
 
@@ -38,10 +48,10 @@ class Page:
     def verify_url_contains_querty(self, querty):
         assert querty in self.driver.current_url, f'{querty} not in {self.driver.current_url}'
 
-    def find_elements(self, *locator):
+    def find_element(self, *locator):
         return self.driver.find_element(*locator)
 
-    def find_element(self, *locator):
+    def find_elements(self, *locator):
         return self.driver.find_elements(*locator)
 
 

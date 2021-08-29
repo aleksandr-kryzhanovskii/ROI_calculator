@@ -33,58 +33,60 @@ class RoiCalculatorPage(Page):
 
     NORTHERN_IA_SOUTHERN_MN = (By.CSS_SELECTOR, "option[value *= 'Region 1']")
 
-    SHOW_TOTAL_BENEFITS = (By.XPATH, "//button[@type='submit']")
+    SHOW_TOTAL_BENEFITS = (By.ID, "submitForm")
 
-    NO_RESULT_POPUP = (By.ID, 'calculatorNoResultContactUs')
-    RESULT_POPUP = (By.CSS_SELECTOR, 'th.d-lg-none')
+    NO_RESULT_POPUP = (By.XPATH, "//div[@class='no-result-body']/p")
+
+    RESULT_POPUP = (By.XPATH, "//div[@class='calculator-result-body']/h3")
 
     SOIL_TIPE_TOOLTIP = (By.CSS_SELECTOR, "i[data-original-title*='soil type']")
+    TOOL = (By.CSS_SELECTOR, "i[data-original-title*='soil type']")
 
     FORMS_SECTIONS = {
         'Information: Soil type': [
-            (By.ID, 'Loam'),
-            (By.ID, 'Sandy'),
-            (By.ID, 'Clayey'),
-            (By.ID, 'Silty')
+            (By.XPATH, '//label[@for="Loam"]'),
+            (By.XPATH, '//label[@for="Sandy"]'),
+            (By.XPATH, '//label[@for="Clayey"]'),
+            (By.XPATH, '//label[@for="Silty"]')
         ],
         'Information: Crop type': [
-            (By.ID, 'CornSoy'),
-            (By.ID, 'Cereal'),
-            (By.ID, 'Vegetables'),
-            (By.ID, 'Fruits'),
-            (By.ID, 'Others')
+            (By.XPATH, '//label[@for="CornSoy"]'),
+            (By.XPATH, '//label[@for="Cereal"]'),
+            (By.XPATH, '//label[@for="Vegetables"]'),
+            (By.XPATH, '//label[@for="Fruits"]'),
+            (By.XPATH, '//label[@for="Others"]')
         ],
         'Currently practicing: Tillage management': [
-            (By.ID, 'fullTillage'),
-            (By.ID, 'reducedTillage'),
-            (By.ID, 'noTill')
+            (By.XPATH, '//label[@for="fullTillage"]'),
+            (By.XPATH, '//label[@for="reducedTillage"]'),
+            (By.XPATH, '//label[@for="noTill"]')
         ],
         'Currently practicing: Cover crops': [
-            (By.ID, 'No'),
-            (By.ID, 'Yes')
+            (By.XPATH, '//label[@for="No"]'),
+            (By.XPATH, '//label[@for="Yes"]')
         ],
         'Currently practicing: Nitrogen efficiency practices': [
-            (By.ID, 'nitrogenEfficiencyPracticesNo'),
-            (By.ID, 'nitrogenEfficiencyPracticesYes')
+            (By.XPATH, '//label[@for="No"]'),
+            (By.XPATH, '//label[@for="No"]')
         ],
         'Willing to implement: Tillage management': [
-            (By.ID, 'willingToImplementFullTillage'),
-            (By.ID, 'willingToImplementReducedTillage'),
-            (By.ID, 'willingToImplementNoTill')
+            (By.XPATH, '//label[@for="willingToImplementFullTillage"]'),
+            (By.XPATH, '//label[@for="willingToImplementReducedTillage"]'),
+            (By.XPATH, '//label[@for="willingToImplementNoTill"]')
         ],
         'Willing to implement: Cover crops': [
-            (By.ID, 'willingToImplementCoverCropsNo'),
-            (By.ID, 'willingToImplementCoverCropsYes')
+            (By.XPATH, '//label[@for="willingToImplementCoverCropsYes"]'),
+            (By.XPATH, '//label[@for="willingToImplementCoverCropsNo"]')
         ],
         'Willing to implement: Type of cover crop': [
-            (By.ID, 'willingToImplementCoverCropsTypeCerealsRye'),
-            (By.ID, 'willingToImplementCoverCropsTypeLeguminose'),
-            (By.ID, 'willingToImplementCoverCropsType2SpeciesMix'),
-            (By.ID, 'willingToImplementCoverCropsTypeBrassica')
+            (By.XPATH, '//label[@for="willingToImplementCoverCropsTypeCerealsRye"]'),
+            (By.XPATH, '//label[@for="willingToImplementCoverCropsTypeLeguminose"]'),
+            (By.XPATH, '//label[@for="willingToImplementCoverCropsType2SpeciesMix"]'),
+            (By.XPATH, '//label[@for="willingToImplementCoverCropsTypeBrassica"]')
         ],
         'Willing to implement: Nitrogen efficiency practices': [
-            (By.ID, 'willingToImplementNitrogenEfficiencyPracticesNo'),
-            (By.ID, 'willingToImplementNitrogenEfficiencyPracticesYes')
+            (By.XPATH, '//label[@for="wwillingToImplementNitrogenEfficiencyPracticesNo"]'),
+            (By.XPATH, '//label[@for="wwillingToImplementNitrogenEfficiencyPracticesYes"]')
         ]
     }
 
@@ -112,7 +114,10 @@ class RoiCalculatorPage(Page):
 
 
     def click_show_total_benefits_btn(self):
-        self.submit(*self.SHOW_TOTAL_BENEFITS)
+        print('kasdf')
+        self.find_element(*self.SHOW_TOTAL_BENEFITS).submit()
+        sleep(3)
+        #self.click(*self.SHOW_TOTAL_BENEFITS)
 
 
     def click_fruits(self):
@@ -120,25 +125,41 @@ class RoiCalculatorPage(Page):
 
 
     def hover_soil_type_tooltip(self):
-        total_area = self.find_elements(*self.SOIL_TIPE_TOOLTIP)
+        total_area = self.find_element(*self.SOIL_TIPE_TOOLTIP)
+        total_area.location_once_scrolled_into_view
+        sleep(3)
         actions = ActionChains(self.driver)
         actions.move_to_element(total_area)
         actions.perform()
 
+    SCROLL = (By.XPATH, '//label[@for="willingToImplementCoverCropsTypeCerealsRye"]')
+
+    SCROLL_2 = (By.ID, "lp-code-19")
+
+    SCROLL_3 = (By.XPATH, "//div[@class='col-12 col-lg-8']/nav/p")
+
+
+    def scroll(self):
+        area = self.find_element(*self.SCROLL_3)
+        area.location_once_scrolled_into_view
+
+
 
     def verify_result_popup_open(self):
-        self.find_element(*self.RESULT_POPUP)
+        sleep(2)
+        expected_text = "Projected average annual benefit over 10 years*"
+        actual_text = self.find_element(*self.RESULT_POPUP).text
+        assert expected_text == actual_text, f'Expected {expected_text} but get {actual_text}'
+        # GEt the TExt into a variable
+        #assert exp == actual
 
     def click_over_form_section(self, form_section):
         current_section = self.FORMS_SECTIONS[form_section]
 
         for current_option in current_section:
-            #print(current_option)
-            #self.wait_for_element_click(*current_option)
-            #e = self.driver.find_element(By.ID, 'Sandy')
-            #print('clicking..')
-            #e.click()
-            self.wait_for_element_click(*current_option)
+            self.find_element(*current_option).click()
+
+
 
 
 

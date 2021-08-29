@@ -13,23 +13,32 @@ Feature: Roi Calculator
   Scenario: Verify User CAN NOT input negative num in total field area
     Given Open calculator page
     When Scroll down to calculator section
-    When Enter 3000 into input field
-    Then Verify 3000 was added
-#    Then Verify User CAN NOT input negative num in total field area
-#
-  Scenario: Verify User CAN NOT input symbols in total field area
+    When Enter e into input field
+    Then Verify letters was NOT added to search field
+
+
+  Scenario: Verify User CAN NOT input 0 num in total field area
     Given Open calculator page
+    When Scroll down to calculator section
+    When Enter 0 into input field
+    Then Verify 0 was NOT added to search field
+
+
+  Scenario: Verify User CAN NOT input symbols num in total field area
+    Given Open calculator page
+    When Scroll down to calculator section
     When Enter . into input field
-    Then Verify User CAN NOT input symbols in total field area
-#
+    Then Verify symbol was NOT added to search field
+
   Scenario: Verify User CAN NOT input letters in total field area
     Given Open calculator page
     When Enter e into input field
-    Then Verify User CAN NOT input letters in total field area
-#
+    Then Verify letters was NOT added to search field
+
   Scenario: Verify user can choose Northern IA/Southern MN Region
     Given Open calculator page
     When Scroll down to calculator section
+    When Enter 3000 into input field
     And Click on Region Menu
     And Click on Northern IA/Southern MN Region
     And Click Total Benefits button
@@ -38,10 +47,11 @@ Feature: Roi Calculator
   Scenario: Verify user can see Soil type tooltip
     Given Open calculator page
     When Hover over Soil type tooltip
+    Then Verify User can see tooltips text
 
-#    Then Verify User can see tooltips text
-
-  Scenario: User can click over my farm information section
+  Scenario Outline: User can click over my farm information section
+    Examples:
+    |form_section|
     |Information: Soil type|
     |Information: Crop type|
     |Currently practicing: Tillage management|

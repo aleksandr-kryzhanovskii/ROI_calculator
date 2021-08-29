@@ -9,11 +9,12 @@ class Page:
         self.wait = WebDriverWait(self.driver, 15)
 
     def click(self, *locator):
-        print('INSIDE CLICK', *locator)
-        #self.driver.find_element(*locator).click()
-        e = self.driver.find_element(By.ID, 'Sandy')
-        print(e)
+        e = self.find_element(*locator)
         e.click()
+    #
+    # def click(self, *locator):
+    #     self.click(*locator)
+
 
     def submit(self, *locator):
         self.driver.find_element(*locator).submit()

@@ -5,10 +5,11 @@ from time import sleep
 @given('Open Agoro carbon alliance page')
 def open_main_page(context):
    context.app.main_page.open_main_page()
+   sleep(4)
 
 @when('Scroll down to calculator section')
 def scroll_to_calculator(context):
-    context.app.main_page.scroll_to_calculator()
+    context.app.roi_calculator_page.scroll()
     sleep(4)
 
 

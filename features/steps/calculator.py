@@ -14,8 +14,8 @@ def open_roi_calculator(context):
 
 @when('Click Total Benefits button')
 def click_show_total_benefits_btn(context):
-   context.app.roi_calculator_page.click_show_total_benefits_btn()
-   sleep(2)
+    context.app.roi_calculator_page.click_show_total_benefits_btn()
+
 
 
 @when('Enter {search_query} into input field')
@@ -33,7 +33,7 @@ def click_NorthernIA_SouthernMN(context):
    context.app.roi_calculator_page.click_NorthernIA_SouthernMN()
 
 @then('Verify {expected_query} was added')
-def click_cart_icon(context, expected_query):
+def click_input_result(context, expected_query):
    context.app.roi_calculator_page.verify_input_result(expected_query)
 
 
@@ -50,7 +50,27 @@ def hover_over_soil_type_tooltip(context):
 def click_NorthernIA_SouthernMN(context):
    context.app.roi_calculator_page.click_fruits()
 
-@Then('click over form {form_section} section')
+@then('click over form {form_section} section')
 def click_over_options(context, form_section):
    sleep(4)
    context.app.roi_calculator_page.click_over_form_section(form_section)
+
+# @then('Verify User can see tooltips text')
+# def click_(context):
+#    context.app.roi_calculator_page.()
+TOTAL_FIELD_AREA = (By.ID, 'totalFieldArea')
+
+@then('Verify letters was NOT added to search field')
+def verify_not_negativ(context):
+   e = context.driver.find_element(*TOTAL_FIELD_AREA)
+   assert e == int, f'Input data is not an integer'
+
+@then('Verify 0 was NOT added to search field')
+def verify_not_negativ(context):
+   e = context.driver.find_element(*TOTAL_FIELD_AREA)
+   assert e == 0, f'Input data CAN NOT be 0'
+
+@then('Verify symbol was NOT added to search field')
+def verify_not_negativ(context):
+   e = context.driver.find_element(*TOTAL_FIELD_AREA)
+   assert e != int, f'Input data is not an integer'

@@ -20,8 +20,8 @@ def click_show_total_benefits_btn(context):
 
 @when('Enter {search_query} into input field')
 def input_total_field_area(context, search_query):
-    context.app.roi_calculator_page.input_total_field_area(search_query)
-
+   context.app.roi_calculator_page.input_total_field_area(search_query)
+   sleep(8)
 
 @when('Click on Region Menu')
 def click_region_menu(context):
@@ -45,6 +45,7 @@ def verify_result_popup_open(context):
 @when('Hover over Soil type tooltip')
 def hover_over_soil_type_tooltip(context):
    context.app.roi_calculator_page.hover_soil_type_tooltip()
+   sleep(8)
 
 @when('Click Fruits crop type')
 def click_NorthernIA_SouthernMN(context):
@@ -73,4 +74,32 @@ def verify_not_negativ(context):
 @then('Verify symbol was NOT added to search field')
 def verify_not_negativ(context):
    e = context.driver.find_element(*TOTAL_FIELD_AREA)
-   assert e != int, f'Input data is not an integer'
+   if e != int:
+      print('Input data is not an integer')
+   else:
+      pass
+
+
+@then('Verify negative number was NOT added to search field')
+def verify_not_negativ(context):
+   e = context.driver.find_element(*TOTAL_FIELD_AREA).text
+   print('debug ', e)
+   assert int(e) > 0, f'Input data is not an integer'
+
+
+@then('click over region option {region}')
+def verify_click_over_region(context, region):
+   context.app.roi_calculator_page.click_over_region_section(region)
+
+@then('Verify the tag has the {attribute} attribute')
+def verify_tag_attribute(context, attribute):
+   context.app.roi_calculator_page.verify_attribute(attribute)
+
+@then('Verify User can see tooltips text')
+def verify_tooltip(context):
+   context.app.roi_calculator_page.hover_soil_type_tooltip()
+
+
+@when('Hover over {section} tooltip')
+def verify_hover_over_tooltip(context, section):
+   context.app.roi_calculator_page.hover_over_section(section)

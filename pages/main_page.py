@@ -22,8 +22,8 @@ class MainPage(Page):
         self.click(*self.US_FARMERS)
 
     def scroll_to_calculator(self):
-        area = self.scroll_to_element(*self.TEST)
-        area.location_once_scrolled_into_view
+        self.scroll_to_element(*self.TEST)
+
 
 
 

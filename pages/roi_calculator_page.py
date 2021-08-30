@@ -2,34 +2,16 @@ from selenium.webdriver.common.by import By
 from pages.base_page import Page
 from selenium.webdriver.common.action_chains import ActionChains
 from time import sleep
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 
 class RoiCalculatorPage(Page):
     REGION_SELECT = (By.ID, 'regionSelect')
     TOTAL_FIELD_AREA = (By.ID, 'totalFieldArea')
-    LOAM = (By.ID, 'Sandy')
-    CLAYEY = (By.ID, 'Clayey')
 
-    CORN_SOY = (By.ID, 'CornSoy')
-    CEREAL = (By.ID, 'Cereal')
-    VEGETABLES = (By.ID, 'Vegetables')
-    FRUITS = (By.ID, 'Fruits')
-    OTHERS = (By.ID, 'Others')
 
-    FULL_TILLAGE = (By.ID, 'fullTillage')
-    NO_TILL = (By.ID, 'noTill')
-    REDUCED_TILLAGE = (By.ID, 'reducedTillage')
 
-    COVER_CORPS_NO = (By.ID, 'willingToImplementCoverCropsNo')
-    COVER_CORPS_YES = (By.ID, 'willingToImplementCoverCropsYes')
 
-    COVER_CORPS_CEREALS_RYE = (By.ID, 'willingToImplementCoverCropsTypeCerealsRye')
-    COVER_CORPS_LEGUMINOSE = (By.ID, 'willingToImplementCoverCropsTypeLeguminose')
-    COVER_CORPS_2_SPECIES_MIX = (By.ID, 'willingToImplementCoverCropsType2SpeciesMix')
-    COVER_CORPS_2_BRASSICA = (By.ID, 'willingToImplementCoverCropsTypeBrassica')
-
-    NITROGEN_EFFICIENCY_PRACTICE_NO = (By.ID, 'willingToImplementNitrogenEfficiencyPracticesNo')
-    NITROGEN_EFFICIENCY_PRACTICE_YES = (By.ID, 'willingToImplementNitrogenEfficiencyPracticesYes')
 
     NORTHERN_IA_SOUTHERN_MN = (By.CSS_SELECTOR, "option[value *= 'Region 1']")
 
@@ -41,6 +23,7 @@ class RoiCalculatorPage(Page):
 
     SOIL_TIPE_TOOLTIP = (By.CSS_SELECTOR, "i[data-original-title*='soil type']")
     TOOL = (By.CSS_SELECTOR, "i[data-original-title*='soil type']")
+    TOOL_2 = (By.CSS_SELECTOR, "i[data-original-title*='Nitrogen efficiency practices']")
 
     FORMS_SECTIONS = {
         'Information: Soil type': [
@@ -66,8 +49,8 @@ class RoiCalculatorPage(Page):
             (By.XPATH, '//label[@for="Yes"]')
         ],
         'Currently practicing: Nitrogen efficiency practices': [
-            (By.XPATH, '//label[@for="No"]'),
-            (By.XPATH, '//label[@for="No"]')
+            (By.XPATH, '//label[@for="nitrogenEfficiencyPracticesYes"]'),
+            (By.XPATH, '//label[@for="nitrogenEfficiencyPracticesNo"]')
         ],
         'Willing to implement: Tillage management': [
             (By.XPATH, '//label[@for="willingToImplementFullTillage"]'),
@@ -85,13 +68,42 @@ class RoiCalculatorPage(Page):
             (By.XPATH, '//label[@for="willingToImplementCoverCropsTypeBrassica"]')
         ],
         'Willing to implement: Nitrogen efficiency practices': [
-            (By.XPATH, '//label[@for="wwillingToImplementNitrogenEfficiencyPracticesNo"]'),
-            (By.XPATH, '//label[@for="wwillingToImplementNitrogenEfficiencyPracticesYes"]')
+            (By.XPATH, '//label[@for="willingToImplementNitrogenEfficiencyPracticesNo"]'),
+            (By.XPATH, '//label[@for="willingToImplementNitrogenEfficiencyPracticesYes"]')
         ]
     }
 
+    REGION = {
+        'Region name: Northern IA/Southern MN Region':
+            (By.CSS_SELECTOR, "option[value *= 'Region 1']"),
+        'Region name: Southern IA/Northern MO':
+            (By.CSS_SELECTOR, "option[value *= 'Region 2']"),
+
+    }
+
+
+    TOOL_TIPS = {
+        'Information': [
+            (By.CSS_SELECTOR, "i[data-original-title*='soil type']"),
+            (By.CSS_SELECTOR,"i[data-original-title*='crop type']")
+        ],
+
+        'Currently practicing': [
+
+        ],
+
+        'Willing to implement': [
+            (By.CSS_SELECTOR, "i[data-original-title*='Nitrogen practices']")
+        ]
+
+    }
+
+
+
+
     def open_calculator_page(self):
         self.open_url('https://us.agorocarbonalliance.com/farmers-advisors/#calculator')
+
 
     def input_total_field_area(self, search_query):
         self.input_text(search_query, *self.TOTAL_FIELD_AREA)
@@ -125,9 +137,10 @@ class RoiCalculatorPage(Page):
 
 
     def hover_soil_type_tooltip(self):
-        total_area = self.find_element(*self.SOIL_TIPE_TOOLTIP)
+        total_area = self.find_element(*self.TOOL)
         total_area.location_once_scrolled_into_view
-        sleep(3)
+        #self.driver.execute_script("window.scrollTo(0, window.scrollY + 600)")
+        #sleep(3)
         actions = ActionChains(self.driver)
         actions.move_to_element(total_area)
         actions.perform()
@@ -141,7 +154,8 @@ class RoiCalculatorPage(Page):
 
     def scroll(self):
         area = self.find_element(*self.SCROLL_3)
-        area.location_once_scrolled_into_view
+        self.scroll_to_element(*self.SCROLL_3)
+        # area.location_once_scrolled_into_view
 
 
 
@@ -150,18 +164,45 @@ class RoiCalculatorPage(Page):
         expected_text = "Projected average annual benefit over 10 years*"
         actual_text = self.find_element(*self.RESULT_POPUP).text
         assert expected_text == actual_text, f'Expected {expected_text} but get {actual_text}'
-        # GEt the TExt into a variable
-        #assert exp == actual
+
 
     def click_over_form_section(self, form_section):
         current_section = self.FORMS_SECTIONS[form_section]
-
+        if ("Willing to implement" in form_section) or ("Currently practicing" in form_section):
+            self.driver.execute_script("window.scrollTo(0, window.scrollY + 600)")
+            sleep(3)
         for current_option in current_section:
-            self.find_element(*current_option).click()
+            ele = self.find_element(*current_option)
+            ele.click()
 
 
+    def click_over_region_section(self, region):
+        current_region = self.REGION[region]
+        ele = self.find_element(*current_region)
+        ele.click()
+        sleep(4)
+
+    def verify_attribute(self, attribute):
+        current_value = self.find_element(*self.TOTAL_FIELD_AREA).get_attribute('type')
+        assert current_value == attribute, f'Expected {attribute} but got {current_value}'
 
 
+    def hover_over_section(self, section):
+        tooltips_locator = self.TOOL_TIPS[section]
+        print('locators', tooltips_locator)
+
+        if 'Willing to implement' in section:
+            self.driver.execute_script("window.scrollTo(0, window.scrollY + 600)")
+            sleep(10)
 
 
+        #actions = ActionChains(self.driver)
 
+
+        for locator in tooltips_locator:
+
+            tooltip = self.find_element(*locator)
+
+            #actions.move_to_element(tooltip)
+            #actions.perform()
+            sleep(3)

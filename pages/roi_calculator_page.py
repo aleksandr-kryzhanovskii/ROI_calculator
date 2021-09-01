@@ -9,12 +9,6 @@ class RoiCalculatorPage(Page):
     REGION_SELECT = (By.ID, 'regionSelect')
     TOTAL_FIELD_AREA = (By.ID, 'totalFieldArea')
 
-
-
-
-
-    NORTHERN_IA_SOUTHERN_MN = (By.CSS_SELECTOR, "option[value *= 'Region 1']")
-
     SHOW_TOTAL_BENEFITS = (By.ID, "submitForm")
 
     NO_RESULT_POPUP = (By.XPATH, "//div[@class='no-result-body']/p")
@@ -78,6 +72,22 @@ class RoiCalculatorPage(Page):
             (By.CSS_SELECTOR, "option[value *= 'Region 1']"),
         'Region name: Southern IA/Northern MO':
             (By.CSS_SELECTOR, "option[value *= 'Region 2']"),
+        'Region name: Southern WS/Northern IL':
+            (By.CSS_SELECTOR, "option[value *= 'Region 3']"),
+        'Region name: Central IA/Central IL':
+            (By.CSS_SELECTOR, "option[value *= 'Region 4']"),
+        'Region name: Southern IL/IN/OH/PA':
+            (By.CSS_SELECTOR, "option[value *= 'Region 5']"),
+        'Region name: Nebraska Irrigated':
+            (By.CSS_SELECTOR, "option[value *= 'Region 6']"),
+        'Region name: Nebraska Dry':
+            (By.CSS_SELECTOR, "option[value *= 'Region 7']"),
+        'Region name: ND/SD':
+            (By.CSS_SELECTOR, "option[value *= 'Region 8']"),
+        'Region name: KS/OK':
+            (By.CSS_SELECTOR, "option[value *= 'Region 9']")
+
+
 
     }
 
@@ -85,20 +95,24 @@ class RoiCalculatorPage(Page):
     TOOL_TIPS = {
         'Information': [
             (By.CSS_SELECTOR, "i[data-original-title*='soil type']"),
-            (By.CSS_SELECTOR,"i[data-original-title*='crop type']")
+            (By.CSS_SELECTOR,"i[data-original-title*='crop type']"),
         ],
 
         'Currently practicing': [
+            (By.CSS_SELECTOR, "i[data-original-title*='Full']"),
+            (By.CSS_SELECTOR, "i[data-original-title*='last']"),
+            (By.CSS_SELECTOR, "i[data-original-title*='Which']"),
 
         ],
 
         'Willing to implement': [
-            (By.CSS_SELECTOR, "i[data-original-title*='Nitrogen practices']")
+            (By.CSS_SELECTOR, "i[data-original-title*='tillage reduction']"),
+            (By.CSS_SELECTOR, "i[data-original-title*='type of cover']"),
+            (By.CSS_SELECTOR, "i[data-original-title*='implement cover']"),
+            (By.CSS_SELECTOR, "i[data-original-title*='Nitrogen practices']"),
         ]
 
     }
-
-
 
 
     def open_calculator_page(self):
@@ -118,8 +132,6 @@ class RoiCalculatorPage(Page):
     def click_NorthernIA_SouthernMN(self):
         self.click(*self.NORTHERN_IA_SOUTHERN_MN)
 
-    # def click_(self):
-    #     self.click(*self.NORTHERN_IA_SOUTHERN_MN)
 
     def wait_submit_clickable(self):
         self.wait_for_element_click(*self.SHOW_TOTAL_BENEFITS)
@@ -189,20 +201,22 @@ class RoiCalculatorPage(Page):
 
     def hover_over_section(self, section):
         tooltips_locator = self.TOOL_TIPS[section]
-        print('locators', tooltips_locator)
 
-        if 'Willing to implement' in section:
+        #sleep(20)
+        if ('Willing to implement' in section) or ("Currently practicing" in section):
             self.driver.execute_script("window.scrollTo(0, window.scrollY + 600)")
+
             sleep(10)
+        else:
+            print("Found")
+            self.wait.until(EC.presence_of_element_located(tooltips_locator[0]))
 
 
-        #actions = ActionChains(self.driver)
-
+        actions = ActionChains(self.driver)
 
         for locator in tooltips_locator:
+            print(type(locator))
 
             tooltip = self.find_element(*locator)
-
-            #actions.move_to_element(tooltip)
-            #actions.perform()
-            sleep(3)
+            actions.move_to_element(tooltip)
+            actions.perform()

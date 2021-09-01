@@ -47,9 +47,6 @@ def hover_over_soil_type_tooltip(context):
    context.app.roi_calculator_page.hover_soil_type_tooltip()
    sleep(8)
 
-@when('Click Fruits crop type')
-def click_NorthernIA_SouthernMN(context):
-   context.app.roi_calculator_page.click_fruits()
 
 @then('click over form {form_section} section')
 def click_over_options(context, form_section):
@@ -66,25 +63,6 @@ def verify_not_negativ(context):
    e = context.driver.find_element(*TOTAL_FIELD_AREA)
    assert e == int, f'Input data is not an integer'
 
-@then('Verify 0 was NOT added to search field')
-def verify_not_negativ(context):
-   e = context.driver.find_element(*TOTAL_FIELD_AREA)
-   assert e == 0, f'Input data CAN NOT be 0'
-
-@then('Verify symbol was NOT added to search field')
-def verify_not_negativ(context):
-   e = context.driver.find_element(*TOTAL_FIELD_AREA)
-   if e != int:
-      print('Input data is not an integer')
-   else:
-      pass
-
-
-@then('Verify negative number was NOT added to search field')
-def verify_not_negativ(context):
-   e = context.driver.find_element(*TOTAL_FIELD_AREA).text
-   print('debug ', e)
-   assert int(e) > 0, f'Input data is not an integer'
 
 
 @then('click over region option {region}')

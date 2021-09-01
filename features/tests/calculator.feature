@@ -19,7 +19,8 @@ Feature: Roi Calculator
     |section|
 
     |Information|
-    |Willing to implement|
+    #|Currently practicing|
+    #|Willing to implement|
     Given Open calculator page
     When Hover over <section> tooltip
     #Then Verify User can see tooltips text
@@ -45,6 +46,13 @@ Feature: Roi Calculator
       |region|
       |Region name: Northern IA/Southern MN Region|
       |Region name: Southern IA/Northern MO|
+      |Region name: Southern WS/Northern IL|
+      |Region name: Central IA/Central IL|
+      |Region name: Southern IL/IN/OH/PA|
+      |Region name: Nebraska Irrigated|
+      |Region name: Nebraska Dry|
+      |Region name: ND/SD|
+      |Region name: KS/OK|
     Given Open calculator page
     Then click over region option <region>
 
